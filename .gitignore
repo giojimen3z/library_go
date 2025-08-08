@@ -1,0 +1,59 @@
+# ===================================
+# Go
+# ===================================
+/bin/
+/vendor/
+/dist/
+/coverage/
+*.log
+*.out
+*.test
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build artifacts
+*.a
+*.o
+
+# Environment
+.env
+.env.*
+
+# ===================================
+# macOS
+# ===================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Thumbnails
+._.DS_Store
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# ===================================
+# IntelliJ / GoLand
+# ===================================
+.idea/
+*.iml
+out/
+
+# ===================================
+# VS Code
+# ===================================
+.vscode/
+.history/
+*.code-workspace
+
+# ===================================
+# Logs & Temporary
+# ===================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
