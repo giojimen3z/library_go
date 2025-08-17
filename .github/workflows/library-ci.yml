@@ -1,0 +1,29 @@
+name: Library CI
+
+on:
+  pull_request:
+    branches: [ master, develop, release/*, feature/*, hotfix/* ]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+env:
+  GO_VERSION: "1.24.x"
+  COVER_MIN: "0"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+      - run: make deps || true
+      - run: make tidy || true
+      - run: make vet || true
+      - run: make COVER_MIN=${{ env.COVER_MIN }} cover
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.out
