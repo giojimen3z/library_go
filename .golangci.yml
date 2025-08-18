@@ -1,0 +1,35 @@
+run:
+  timeout: 3m
+
+issues:
+  exclude-dirs:
+    - config
+    - mocks
+    - builder
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - ineffassign
+    - gofmt
+    - goimports
+    - unused
+    - revive
+
+linters-settings:
+  gofmt:
+    simplify: true
+
+  revive:
+    severity: warning
+    confidence: 0.8
+    rules:
+      - name: exported
+        severity: warning
+      - name: var-naming
+        severity: warning
