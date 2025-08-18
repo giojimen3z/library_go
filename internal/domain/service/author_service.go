@@ -1,8 +1,8 @@
 package service
 
 import (
-	"hexagonal_base/cmd/api/app/domain/model"
-	"hexagonal_base/cmd/api/app/domain/port"
+	"library/cmd/api/app/domain/model"
+	"library/cmd/api/app/domain/port"
 )
 
 type AuthorService struct {

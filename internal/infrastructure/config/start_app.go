@@ -1,10 +1,10 @@
 package config
 
 import (
-	"hexagonal_base/cmd/api/app/domain/model"
-	"hexagonal_base/cmd/api/app/domain/service"
-	"hexagonal_base/cmd/api/app/infrastructure/adapter/repository"
-	"hexagonal_base/cmd/api/app/infrastructure/controller"
+	"library/cmd/api/app/domain/model"
+	"library/cmd/api/app/domain/service"
+	"library/cmd/api/app/infrastructure/adapter/repository"
+	"library/cmd/api/app/infrastructure/controller"
 
 	"github.com/gin-gonic/gin"
 )

@@ -2,8 +2,8 @@ package repository
 
 import (
 	"fmt"
-	"hexagonal_base/cmd/api/app/domain/model"
-	"hexagonal_base/cmd/api/app/domain/port"
+	"library/cmd/api/app/domain/model"
+	"library/cmd/api/app/domain/port"
 
 	"gorm.io/gorm"
 )

@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"hexagonal_base/cmd/api/app/domain/model"
-	"hexagonal_base/cmd/api/app/domain/service"
+	"library/cmd/api/app/domain/model"
+	"library/cmd/api/app/domain/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

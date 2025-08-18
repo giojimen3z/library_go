@@ -1,6 +1,6 @@
 package port
 
-import "hexagonal_base/cmd/api/app/domain/model"
+import "library/cmd/api/app/domain/model"
 
 type AuthorRepository interface {
 	Save(author *model.Author) error
