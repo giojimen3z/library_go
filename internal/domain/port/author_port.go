@@ -1,9 +1,10 @@
 package port
 
-import "library/cmd/api/app/domain/model"
+import "library/internal/domain/model"
 
-type AuthorRepository interface {
+type AuthorPort interface {
 	Save(author *model.Author) error
 	FindAll() ([]model.Author, error)
 	FindById(id uint64) (*model.Author, error)
+	Update(id uint64, patch *model.Author) (*model.Author, error)
 }

@@ -1,6 +1,6 @@
 package main
 
-import "library/cmd/api/app/infrastructure/config"
+import "library/internal/infrastructure/config"
 
 func main() {
 	config.StartApp()

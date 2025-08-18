@@ -1,10 +1,11 @@
 package config
 
 import (
-	"library/cmd/api/app/domain/model"
-	"library/cmd/api/app/domain/service"
-	"library/cmd/api/app/infrastructure/adapter/repository"
-	"library/cmd/api/app/infrastructure/controller"
+	"library/internal/application"
+	"library/internal/domain/model"
+	"library/internal/domain/service"
+	"library/internal/infrastructure/adapter/repository"
+	"library/internal/infrastructure/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,11 +16,13 @@ func StartApp() {
 
 	authorRepo := repository.NewAuthorRepository(db)
 	authorService := service.NewAuthorService(authorRepo)
-	authorController := controller.NewAuthorController(authorService)
+	authorApplication := application.NewAuthorApp(authorService)
+	authorController := controller.NewAuthorController(authorApplication)
 
 	r := gin.Default()
 	r.POST("/authors", authorController.Create)
 	r.GET("/authors", authorController.GetAll)
-
+	r.GET("/author/:id", authorController.GetById)
+	r.PUT("/authors/:id", authorController.Update)
 	r.Run(":8080")
 }

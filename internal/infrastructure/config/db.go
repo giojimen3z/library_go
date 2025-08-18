@@ -6,30 +6,26 @@ import (
 	"os"
 	"time"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
 func ConnectDB() *gorm.DB {
-	err := godotenv.Load("cmd/api/app/infrastructure/config/dev.env")
-	if err != nil {
-		log.Fatalf("Error load .env file: %v", err)
-	}
+	LoadEnv()
 
-	host := os.Getenv("DB_HOST")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_NAME")
-	port := os.Getenv("DB_PORT")
+	host := MustGetEnv("DB_HOST")
+	user := MustGetEnv("DB_USER")
+	password := MustGetEnv("DB_PASSWORD")
+	dbname := MustGetEnv("DB_NAME")
+	port := MustGetEnv("DB_PORT")
 
 	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // salida: consola
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
-			SlowThreshold: time.Second, // consultas lentas > 1s
-			LogLevel:      logger.Info, // nivel: Silent, Error, Warn, Info
-			Colorful:      true,        // colores en consola
+			SlowThreshold: time.Second,
+			LogLevel:      logger.Info,
+			Colorful:      true,
 		},
 	)
 
@@ -44,5 +40,6 @@ func ConnectDB() *gorm.DB {
 		log.Fatal("Error trying to connect to the database:", err)
 	}
 	fmt.Println("Connection successful")
+
 	return db
 }
