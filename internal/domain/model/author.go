@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Author represent a entity of database with the same name
 type Author struct {
 	ID        uint64    `gorm:"primaryKey;autoIncrement" json:"id"`
 	FirstName string    `json:"first_name" gorm:"size:200;not null"`

@@ -2,6 +2,7 @@ package port
 
 import "library/internal/domain/model"
 
+// AuthorPort define all methods that must to implemented by repository.
 type AuthorPort interface {
 	Save(author *model.Author) error
 	FindAll() ([]model.Author, error)
