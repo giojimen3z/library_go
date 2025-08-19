@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"fmt"
 	"library/internal/domain/model"
 	"library/internal/domain/port"
+	"log/slog"
 
 	"gorm.io/gorm"
 )
@@ -21,7 +21,7 @@ func (r *AuthorRepositoryImpl) Save(author *model.Author) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Author save successful: %+v\n", author)
+	slog.Info("Author save successful", "author", author)
 	return nil
 }
 
@@ -29,7 +29,7 @@ func (r *AuthorRepositoryImpl) FindAll() ([]model.Author, error) {
 	var authors []model.Author
 	err := r.db.Find(&authors).Error
 	if err != nil {
-		fmt.Printf("Failed to find authors: %v", err)
+		slog.Error("Failed to find authors", "error", err)
 		return nil, err
 	}
 
@@ -40,7 +40,7 @@ func (r *AuthorRepositoryImpl) FindById(id uint64) (*model.Author, error) {
 	var author model.Author
 	err := r.db.First(&author, id).Error
 	if err != nil {
-		fmt.Printf("Failed to find author: %v", err)
+		slog.Error("Failed to find author", "error", err)
 		return nil, err
 	}
 	return &author, err
@@ -49,14 +49,17 @@ func (r *AuthorRepositoryImpl) FindById(id uint64) (*model.Author, error) {
 func (r *AuthorRepositoryImpl) Update(id uint64, patch *model.Author) (*model.Author, error) {
 	var existing model.Author
 	if err := r.db.First(&existing, id).Error; err != nil {
+		slog.Error("Error to find the author", "error", err)
 		return nil, err
 	}
 	if err := r.db.Model(&existing).Updates(patch).Error; err != nil {
+		slog.Error("Failed update of author", "error", err)
 		return nil, err
 	}
 
 	updated, err := r.FindById(id)
 	if err != nil {
+		slog.Error("Failed to find authors", "error", err)
 		return nil, err
 	}
 

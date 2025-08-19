@@ -7,6 +7,8 @@ import (
 	"library/internal/infrastructure/adapter/repository"
 	"library/internal/infrastructure/controller"
 	"log"
+	"log/slog"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,6 +30,7 @@ func StartApp() {
 	r.GET("/author/:id", authorController.GetById)
 	r.PUT("/authors/:id", authorController.Update)
 	if err := r.Run(":8080"); err != nil {
-		log.Fatalf("Failed to run server: %v", err)
+		slog.Error("Failed to run server", "error", err)
+		os.Exit(1)
 	}
 }

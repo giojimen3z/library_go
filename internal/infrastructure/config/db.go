@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"time"
 
@@ -37,9 +38,11 @@ func ConnectDB() *gorm.DB {
 	})
 
 	if err != nil {
-		log.Fatal("Error trying to connect to the database:", err)
+		slog.Error("Error trying to connect to the database", "error", err)
+		os.Exit(1)
 	}
-	fmt.Println("Connection successful")
+
+	slog.Info("Connection successful")
 
 	return db
 }
