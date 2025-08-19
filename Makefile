@@ -8,7 +8,7 @@ endif
 COVER_MIN        ?= 0
 COVER_FILE       := coverage.out
 PKG              := ./...
-GOLANGCI_VERSION := v1.64.7
+GOLANGCI_VERSION := v2.4.0
 
 .PHONY: deps tidy vet test cover lint-install lint \
         compose-up compose-logs compose-down db-psql db-reset \
@@ -47,15 +47,17 @@ cover:
 	  exit 1; \
 	fi
 
+# ---------- Quality ----------
 lint-install:
-	@command -v golangci-lint >/dev/null 2>&1 && \
-	  echo "golangci-lint already installed" || \
-	  (echo "Installing golangci-lint $(GOLANGCI_VERSION)..." && \
-	   curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
-	     sh -s -- -b $$(go env GOPATH)/bin $(GOLANGCI_VERSION))
+	@echo ">> Removing any existing golangci-lint..."
+	@rm -f $$(which golangci-lint) || true
+	@echo ">> Installing golangci-lint $(GOLANGCI_VERSION)..."
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
+	  sh -s -- -b $$(go env GOPATH)/bin $(GOLANGCI_VERSION)
 
 lint: lint-install
-	golangci-lint run ./...
+	@golangci-lint version
+	@golangci-lint run ./...
 
 # ---------- DevOps / Runtime ----------
 compose-up:

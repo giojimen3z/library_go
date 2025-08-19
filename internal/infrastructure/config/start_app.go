@@ -6,13 +6,16 @@ import (
 	"library/internal/domain/service"
 	"library/internal/infrastructure/adapter/repository"
 	"library/internal/infrastructure/controller"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func StartApp() {
 	db := ConnectDB()
-	db.AutoMigrate(&model.Author{})
+	if err := db.AutoMigrate(&model.Author{}); err != nil {
+		log.Fatalf("Failed to migrate database: %v", err)
+	}
 
 	authorRepo := repository.NewAuthorRepository(db)
 	authorService := service.NewAuthorService(authorRepo)
@@ -24,5 +27,7 @@ func StartApp() {
 	r.GET("/authors", authorController.GetAll)
 	r.GET("/author/:id", authorController.GetById)
 	r.PUT("/authors/:id", authorController.Update)
-	r.Run(":8080")
+	if err := r.Run(":8080"); err != nil {
+		log.Fatalf("Failed to run server: %v", err)
+	}
 }
