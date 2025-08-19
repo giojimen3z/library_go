@@ -1,7 +1,6 @@
-package builder
+package application
 
 import (
-	"library/internal/application"
 	"library/internal/domain/model"
 	"library/internal/domain/service"
 	"library/internal/test/mock"
@@ -13,7 +12,7 @@ import (
 func TestAppCreateAuthor(t *testing.T) {
 	mockRepo := new(mock.MockAuthorRepo)
 	svc := service.NewAuthorService(mockRepo)
-	app := application.NewAuthorApp(svc)
+	app := NewAuthorApp(svc)
 
 	author := &model.Author{FirstName: "Jane", LastName: "Smith"}
 

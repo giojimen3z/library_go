@@ -1,4 +1,4 @@
-package builder
+package controller
 
 import (
 	"bytes"
@@ -10,7 +10,6 @@ import (
 	"library/internal/application"
 	"library/internal/domain/model"
 	"library/internal/domain/service"
-	"library/internal/infrastructure/controller"
 	"library/internal/test/mock"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +22,7 @@ func TestCreateAuthorController(t *testing.T) {
 	mockRepo := new(mock.MockAuthorRepo)
 	svc := service.NewAuthorService(mockRepo)
 	app := application.NewAuthorApp(svc)
-	ctrl := controller.NewAuthorController(app)
+	ctrl := NewAuthorController(app)
 
 	author := model.Author{FirstName: "Alice", LastName: "Wonder"}
 	mockRepo.On("Save", &author).Return(nil)
