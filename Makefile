@@ -8,7 +8,7 @@ endif
 COVER_MIN        ?= 0
 COVER_FILE       := coverage.out
 PKG              := ./...
-GOLANGCI_VERSION := v2.4.0
+GOLANGCI_VERSION ?= v1.64.7
 
 .PHONY: deps tidy vet test cover lint-install lint \
         compose-up compose-logs compose-down db-psql db-reset \
