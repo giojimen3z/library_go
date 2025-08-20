@@ -1,0 +1,18 @@
+# Go
+/bin
+/out
+/build
+*.test
+*.out
+coverage*
+**/*.log
+
+# VCS/IDE
+.git
+.gitignore
+.idea
+.vscode
+.DS_Store
+
+# Módulos cache locales
+**/node_modules
