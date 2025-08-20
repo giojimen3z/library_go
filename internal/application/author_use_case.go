@@ -5,30 +5,33 @@ import (
 	"library/internal/domain/service"
 )
 
-type AuthorUseCase struct {
-	service *service.AuthorService
+type AuthorUseCaseInterface interface {
+	CreateAuthorUseCase(author *model.Author) error
+	GetAuthorsUseCase() ([]model.Author, error)
+	GetAuthorUseCase(id uint64) (*model.Author, error)
+	UpdateAuthorUseCase(id uint64, patch *model.Author) (*model.Author, error)
 }
 
-func NewAuthorApp(service *service.AuthorService) *AuthorUseCase {
+type AuthorUseCase struct {
+	service service.AuthorServiceInterface
+}
+
+func NewAuthorUseCase(service service.AuthorServiceInterface) *AuthorUseCase {
 	return &AuthorUseCase{service}
 }
 
-// CreateAuthor save a new author using the service.
-func (a *AuthorUseCase) CreateAuthor(author *model.Author) error {
-	return a.service.CreateAuthor(author)
+func (a *AuthorUseCase) CreateAuthorUseCase(author *model.Author) error {
+	return a.service.CreateAuthorService(author)
 }
 
-// GetAuthors get all authors, using the service.
-func (a *AuthorUseCase) GetAuthors() ([]model.Author, error) {
-	return a.service.GetAuthors()
+func (a *AuthorUseCase) GetAuthorsUseCase() ([]model.Author, error) {
+	return a.service.GetAuthorsService()
 }
 
-// GetAuthor get a author according to de ID received.
-func (a *AuthorUseCase) GetAuthor(id uint64) (*model.Author, error) {
-	return a.service.GetAuthor(id)
+func (a *AuthorUseCase) GetAuthorUseCase(id uint64) (*model.Author, error) {
+	return a.service.GetAuthorService(id)
 }
 
-// UpdateAuthor update an existing author in the database.
-func (a *AuthorUseCase) UpdateAuthor(id uint64, patch *model.Author) (*model.Author, error) {
-	return a.service.UpdateAuthor(id, patch)
+func (a *AuthorUseCase) UpdateAuthorUseCase(id uint64, patch *model.Author) (*model.Author, error) {
+	return a.service.UpdateAuthorService(id, patch)
 }

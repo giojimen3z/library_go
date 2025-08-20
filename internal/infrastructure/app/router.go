@@ -22,7 +22,6 @@ func RegisterRoutes(r *gin.Engine, h Handlers) {
 	registerAuthorRoutes(base, h.Author)
 }
 
-// Rutas de Author
 func registerAuthorRoutes(group *gin.RouterGroup, c *controller.AuthorController) {
 	if c == nil {
 		return

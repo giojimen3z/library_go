@@ -18,7 +18,7 @@ import (
 func TestGivenAuthorControllerShouldBeSetOnHandlers(t *testing.T) {
 	mockRepo := new(mockAuthorRepo.AuthorRepoMock)
 	svc := service.NewAuthorService(mockRepo)
-	useCase := application.NewAuthorApp(svc)
+	useCase := application.NewAuthorUseCase(svc)
 	ctrl := controller.NewAuthorController(useCase)
 
 	h := app.NewHandlers(ctrl)
@@ -31,7 +31,7 @@ func TestGivenAuthorControllerShouldPOSTAuthorsReturnBadRequest(t *testing.T) {
 	r := gin.New()
 	mockRepo := new(mockAuthorRepo.AuthorRepoMock)
 	svc := service.NewAuthorService(mockRepo)
-	useCase := application.NewAuthorApp(svc)
+	useCase := application.NewAuthorUseCase(svc)
 	ctrl := controller.NewAuthorController(useCase)
 
 	h := app.NewHandlers(ctrl)

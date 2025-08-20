@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -9,7 +9,7 @@ import (
 
 func LoadEnv() {
 	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found, reading environment variables from system")
+		slog.Error("No .env file found, reading environment variables from system", "error", err)
 	}
 }
 
@@ -24,6 +24,7 @@ func MustGetEnv(key string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
 	}
-	log.Fatalf("environment variable %s is required but not set", key)
+	slog.Error("environment variable is required but not set", "key", key)
+	os.Exit(1)
 	return ""
 }

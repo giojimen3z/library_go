@@ -2,14 +2,11 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"log/slog"
 	"os"
-	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func ConnectDB() *gorm.DB {
@@ -21,21 +18,10 @@ func ConnectDB() *gorm.DB {
 	dbname := MustGetEnv("DB_NAME")
 	port := MustGetEnv("DB_PORT")
 
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags),
-		logger.Config{
-			SlowThreshold: time.Second,
-			LogLevel:      logger.Info,
-			Colorful:      true,
-		},
-	)
-
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Bogota",
 		host, user, password, dbname, port)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: newLogger,
-	})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		slog.Error("Error trying to connect to the database", "error", err)

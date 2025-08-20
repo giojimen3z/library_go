@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"log/slog"
 	"os"
 
@@ -18,19 +17,20 @@ import (
 func StartApp() {
 	db := ConnectDB()
 	if err := db.AutoMigrate(&model.Author{}); err != nil {
-		log.Fatalf("Failed to migrate database: %v", err)
+		slog.Error("Failed to migrate database", "error", err)
+		os.Exit(1)
 	}
 
 	authorRepo := repository.NewAuthorRepository(db)
 	authorService := service.NewAuthorService(authorRepo)
-	authorApplication := application.NewAuthorApp(authorService)
+	authorApplication := application.NewAuthorUseCase(authorService)
 	authorController := controller.NewAuthorController(authorApplication)
 
 	r := gin.Default()
 	handlers := app.NewHandlers(authorController)
 	app.RegisterRoutes(r, handlers)
 
-	if err := r.Run(":8080"); err != nil {
+	if err := r.Run(":" + GetEnv("PORT", "8080")); err != nil {
 		slog.Error("Failed to run server", "error", err)
 		os.Exit(1)
 	}

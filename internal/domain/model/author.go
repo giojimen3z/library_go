@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// Author represent a entity of database with the same name
 type Author struct {
 	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	FirstName string    `json:"first_name" gorm:"size:200;not null"`

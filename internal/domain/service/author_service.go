@@ -7,6 +7,13 @@ import (
 	"github.com/google/uuid"
 )
 
+type AuthorServiceInterface interface {
+	CreateAuthorService(author *model.Author) error
+	GetAuthorsService() ([]model.Author, error)
+	GetAuthorService(id uint64) (*model.Author, error)
+	UpdateAuthorService(id uint64, patch *model.Author) (*model.Author, error)
+}
+
 type AuthorService struct {
 	repo port.AuthorPort
 }
@@ -15,24 +22,20 @@ func NewAuthorService(repo port.AuthorPort) *AuthorService {
 	return &AuthorService{repo}
 }
 
-// CreateAuthor save a new author using the repository.
-func (s *AuthorService) CreateAuthor(author *model.Author) error {
+func (s *AuthorService) CreateAuthorService(author *model.Author) error {
 	id := uuid.New()
 	author.ID = id
-	return s.repo.Save(author)
+	return s.repo.SaveRepository(author)
 }
 
-// GetAuthors get all authors, using the repository.
-func (s *AuthorService) GetAuthors() ([]model.Author, error) {
-	return s.repo.FindAll()
+func (s *AuthorService) GetAuthorsService() ([]model.Author, error) {
+	return s.repo.FindAllRepository()
 }
 
-// GetAuthor get a author according to de ID received.
-func (s *AuthorService) GetAuthor(id uint64) (*model.Author, error) {
-	return s.repo.FindById(id)
+func (s *AuthorService) GetAuthorService(id uint64) (*model.Author, error) {
+	return s.repo.FindByIdRepository(id)
 }
 
-// UpdateAuthor update an existing author in the database.
-func (s *AuthorService) UpdateAuthor(id uint64, patch *model.Author) (*model.Author, error) {
-	return s.repo.Update(id, patch)
+func (s *AuthorService) UpdateAuthorService(id uint64, patch *model.Author) (*model.Author, error) {
+	return s.repo.UpdateRepository(id, patch)
 }
