@@ -1,18 +1,20 @@
-package application
+package application_test
 
 import (
+	"testing"
+
+	"library/internal/application"
 	"library/internal/domain/model"
 	"library/internal/domain/service"
 	"library/internal/test/mock"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAppCreateAuthor(t *testing.T) {
-	mockRepo := new(mock.MockAuthorRepo)
+	mockRepo := new(mock.AuthorRepoMock)
 	svc := service.NewAuthorService(mockRepo)
-	app := NewAuthorApp(svc)
+	app := application.NewAuthorApp(svc)
 
 	author := &model.Author{FirstName: "Jane", LastName: "Smith"}
 

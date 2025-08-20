@@ -1,27 +1,40 @@
-package service
+package service_test
 
 import (
-	"library/internal/domain/model"
-	"library/internal/test/mock"
+	"errors"
 	"testing"
+
+	"library/internal/domain/service"
+	"library/internal/test/builder"
+
+	mmockAuthorRepo "library/internal/test/mock"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateAuthor(t *testing.T) {
-	mockRepo := new(mock.MockAuthorRepo)
-	service := NewAuthorService(mockRepo)
-
-	author := &model.Author{
-		FirstName: "John",
-		LastName:  "Doe",
-	}
-
-	// Definir comportamiento del mock
+func TestGivenAnAuthorShouldSaveInDBThenReturnNilError(t *testing.T) {
+	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
+	serviceAuthor := service.NewAuthorService(mockRepo)
+	author := builder.NewAuthorBuilder().Build()
 	mockRepo.On("Save", author).Return(nil)
 
-	err := service.CreateAuthor(author)
-	assert.NoError(t, err)
+	err := serviceAuthor.CreateAuthor(author)
 
+	assert.Nil(t, err)
+	mockRepo.AssertExpectations(t)
+}
+
+func TestGivenWrongAuthorShouldFailSaveInDBThenReturnError(t *testing.T) {
+	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
+	serviceAuthor := service.NewAuthorService(mockRepo)
+	author := builder.NewAuthorBuilder().Build()
+	errorExpected := errors.New("error saving into DB")
+	mockRepo.On("Save", author).Return(errorExpected)
+
+	err := serviceAuthor.CreateAuthor(author)
+
+	assert.NotNil(t, err)
+	assert.Error(t, errorExpected)
+	assert.Equal(t, errorExpected, err)
 	mockRepo.AssertExpectations(t)
 }

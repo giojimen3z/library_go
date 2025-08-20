@@ -1,14 +1,16 @@
 package config
 
 import (
+	"log"
+	"log/slog"
+	"os"
+
 	"library/internal/application"
 	"library/internal/domain/model"
 	"library/internal/domain/service"
 	"library/internal/infrastructure/adapter/repository"
+	"library/internal/infrastructure/app"
 	"library/internal/infrastructure/controller"
-	"log"
-	"log/slog"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,10 +27,9 @@ func StartApp() {
 	authorController := controller.NewAuthorController(authorApplication)
 
 	r := gin.Default()
-	r.POST("/authors", authorController.Create)
-	r.GET("/authors", authorController.GetAll)
-	r.GET("/author/:id", authorController.GetById)
-	r.PUT("/authors/:id", authorController.Update)
+	handlers := app.NewHandlers(authorController)
+	app.RegisterRoutes(r, handlers)
+
 	if err := r.Run(":8080"); err != nil {
 		slog.Error("Failed to run server", "error", err)
 		os.Exit(1)

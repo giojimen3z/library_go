@@ -3,6 +3,8 @@ package service
 import (
 	"library/internal/domain/model"
 	"library/internal/domain/port"
+
+	"github.com/google/uuid"
 )
 
 type AuthorService struct {
@@ -15,6 +17,8 @@ func NewAuthorService(repo port.AuthorPort) *AuthorService {
 
 // CreateAuthor save a new author using the repository.
 func (s *AuthorService) CreateAuthor(author *model.Author) error {
+	id := uuid.New()
+	author.ID = id
 	return s.repo.Save(author)
 }
 
