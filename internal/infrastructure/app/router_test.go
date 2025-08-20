@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewHandlers_SetsAuthor(t *testing.T) {
+func TestGivenAuthorControllerShouldBeSetOnHandlers(t *testing.T) {
 	mockRepo := new(mockAuthorRepo.AuthorRepoMock)
 	svc := service.NewAuthorService(mockRepo)
 	useCase := application.NewAuthorApp(svc)
@@ -26,7 +26,7 @@ func TestNewHandlers_SetsAuthor(t *testing.T) {
 	assert.Equal(t, ctrl, h.Author)
 }
 
-func TestRegisterRoutes_NoAuthor_POSTAuthors_Returns404(t *testing.T) {
+func TestGivenAuthorControllerShouldPOSTAuthorsReturnBadRequest(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.New()
 	mockRepo := new(mockAuthorRepo.AuthorRepoMock)
@@ -44,7 +44,7 @@ func TestRegisterRoutes_NoAuthor_POSTAuthors_Returns404(t *testing.T) {
 
 }
 
-func TestRegisterRoutes_NoAuthor_GETAuthors_Returns404(t *testing.T) {
+func TestGivenNoAuthorControllerShouldGETAuthorsReturnNotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.New()
 
@@ -57,7 +57,7 @@ func TestRegisterRoutes_NoAuthor_GETAuthors_Returns404(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, rr.Code)
 }
 
-func TestRegisterRoutes_NoAuthor_GETAuthorByID_Returns404(t *testing.T) {
+func TestGivenNoAuthorControllerShouldGETAuthorByIDReturnNotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.New()
 
@@ -70,7 +70,7 @@ func TestRegisterRoutes_NoAuthor_GETAuthorByID_Returns404(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, rr.Code)
 }
 
-func TestRegisterRoutes_NoAuthor_PUTAuthorByID_Returns404(t *testing.T) {
+func TestGivenNoAuthorControllerShouldPUTAuthorByIDReturnNotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.New()
 
