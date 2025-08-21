@@ -1,4 +1,4 @@
-name: Library CI
+name: "Library CI 🟠⭐️⭐️⭐️⭐️ Dragon Ball"
 
 on:
   pull_request:
@@ -11,6 +11,7 @@ env:
 
 jobs:
   test:
+    name: "Run Tests 🟠⭐️⭐️⭐️⭐️"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
