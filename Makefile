@@ -4,6 +4,11 @@ include .env
 export
 endif
 
+# --- Force Git bash on Windows ---
+SHELL := /usr/bin/bash
+.SHELLFLAGS := -lc
+
+
 # --- Quality variables ---
 COVER_MIN        ?= 0
 COVER_FILE       := coverage.out
