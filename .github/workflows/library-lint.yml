@@ -1,4 +1,4 @@
-name: "Library Lint 🟠⭐️⭐️⭐️⭐️ Dragon Ball"
+name: Lint
 
 on:
   pull_request:
@@ -10,7 +10,6 @@ env:
 
 jobs:
   golangci:
-    name: "Run Lint 🟠⭐️⭐️⭐️⭐️"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,8 +17,6 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: true
-      - run: make deps || true
-      - run: make tidy || true
       - uses: golangci/golangci-lint-action@v6
         with:
           version: v1.64.7
