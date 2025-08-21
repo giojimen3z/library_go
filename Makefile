@@ -4,7 +4,6 @@ include .env
 export
 endif
 
-
 # --- Quality variables ---
 COVER_MIN        ?= 0
 COVER_FILE       := coverage.out

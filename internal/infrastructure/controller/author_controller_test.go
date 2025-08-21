@@ -25,7 +25,7 @@ func TestGivenAnAuthorWhenCreateInControllerThenReturnStatusCreated(t *testing.T
 	app := application.NewAuthorUseCase(svc)
 	ctrl := controller.NewAuthorController(app)
 	author := builder.NewAuthorBuilder().Build()
- mockRepo.On("Save", mock.Anything).Return(nil)
+	mockRepo.On("Save", mock.Anything).Return(nil)
 	body, _ := json.Marshal(author)
 	req, _ := http.NewRequest("POST", "/authors", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
