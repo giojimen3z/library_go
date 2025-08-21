@@ -17,7 +17,7 @@ const (
 	authorQuery = "INSERT INTO authors"
 )
 
-func TestGivenValidAuthor_WhenSave_ThenReturnsNil(t *testing.T) {
+func TestGivenValidAuthorWhenSaveThenReturnsNil(t *testing.T) {
 	gdb, sqlMock := mock.SetupGormWithSQLMock(t)
 	repo := repository.NewAuthorRepository(gdb)
 	author := builder.NewAuthorBuilder().Build()
@@ -33,7 +33,7 @@ func TestGivenValidAuthor_WhenSave_ThenReturnsNil(t *testing.T) {
 	assert.NoError(t, sqlMock.ExpectationsWereMet())
 }
 
-func TestGivenDBError_WhenSave_ThenReturnsError(t *testing.T) {
+func TestGivenDBErrorWhenSaveThenReturnsError(t *testing.T) {
 	gdb, sqlMock := mock.SetupGormWithSQLMock(t)
 	repo := repository.NewAuthorRepository(gdb)
 	author := builder.NewAuthorBuilder().Build()
