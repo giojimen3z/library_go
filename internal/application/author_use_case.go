@@ -21,17 +21,17 @@ func NewAuthorUseCase(service service.AuthorServiceInterface) *AuthorUseCase {
 }
 
 func (a *AuthorUseCase) CreateAuthorUseCase(author *model.Author) error {
-	return a.service.CreateAuthorService(author)
+	return a.service.CreateAuthor(author)
 }
 
 func (a *AuthorUseCase) GetAuthorsUseCase() ([]model.Author, error) {
-	return a.service.GetAuthorsService()
+	return a.service.GetAuthors()
 }
 
 func (a *AuthorUseCase) GetAuthorUseCase(id uint64) (*model.Author, error) {
-	return a.service.GetAuthorService(id)
+	return a.service.GetAuthor(id)
 }
 
 func (a *AuthorUseCase) UpdateAuthorUseCase(id uint64, patch *model.Author) (*model.Author, error) {
-	return a.service.UpdateAuthorService(id, patch)
+	return a.service.UpdateAuthor(id, patch)
 }

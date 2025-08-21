@@ -12,14 +12,14 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestAppCreateAuthor(t *testing.T) {
+func TestGivenAuthorWhenAppCreateAuthorThenReturnNoError(t *testing.T) {
 	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
 	svc := service.NewAuthorService(mockRepo)
 	app := application.NewAuthorUseCase(svc)
 
 	author := &model.Author{FirstName: "Jane", LastName: "Smith"}
 
-	mockRepo.On("SaveRepository", mock.Anything).Return(nil)
+	mockRepo.On("Save", mock.Anything).Return(nil)
 
 	err := app.CreateAuthorUseCase(author)
 	assert.NoError(t, err)

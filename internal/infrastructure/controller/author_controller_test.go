@@ -18,14 +18,14 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestGivenAnAuthorShouldSaveInDBThenReturnNilError(t *testing.T) {
+func TestGivenAnAuthorWhenCreateInControllerThenReturnStatusCreated(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	mockRepo := new(mockAuthorRepo.AuthorRepoMock)
 	svc := service.NewAuthorService(mockRepo)
 	app := application.NewAuthorUseCase(svc)
 	ctrl := controller.NewAuthorController(app)
 	author := builder.NewAuthorBuilder().Build()
-	mockRepo.On("SaveRepository", mock.Anything).Return(nil)
+ mockRepo.On("Save", mock.Anything).Return(nil)
 	body, _ := json.Marshal(author)
 	req, _ := http.NewRequest("POST", "/authors", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")

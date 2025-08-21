@@ -17,7 +17,7 @@ func NewAuthorRepository(db *gorm.DB) port.AuthorPort {
 	return &AuthorRepositoryImpl{db: db}
 }
 
-func (r *AuthorRepositoryImpl) SaveRepository(author *model.Author) error {
+func (r *AuthorRepositoryImpl) Save(author *model.Author) error {
 	err := r.db.Create(author).Error
 	if err != nil {
 		return err
@@ -26,7 +26,7 @@ func (r *AuthorRepositoryImpl) SaveRepository(author *model.Author) error {
 	return nil
 }
 
-func (r *AuthorRepositoryImpl) FindAllRepository() ([]model.Author, error) {
+func (r *AuthorRepositoryImpl) FindAll() ([]model.Author, error) {
 	var authors []model.Author
 	err := r.db.Find(&authors).Error
 	if err != nil {
@@ -37,7 +37,7 @@ func (r *AuthorRepositoryImpl) FindAllRepository() ([]model.Author, error) {
 	return authors, err
 }
 
-func (r *AuthorRepositoryImpl) FindByIdRepository(id uint64) (*model.Author, error) {
+func (r *AuthorRepositoryImpl) FindById(id uint64) (*model.Author, error) {
 	var author model.Author
 	err := r.db.First(&author, id).Error
 	if err != nil {
@@ -47,7 +47,7 @@ func (r *AuthorRepositoryImpl) FindByIdRepository(id uint64) (*model.Author, err
 	return &author, err
 }
 
-func (r *AuthorRepositoryImpl) UpdateRepository(id uint64, patch *model.Author) (*model.Author, error) {
+func (r *AuthorRepositoryImpl) Update(id uint64, patch *model.Author) (*model.Author, error) {
 	var existing model.Author
 	if err := r.db.First(&existing, id).Error; err != nil {
 		slog.Error("Error to find the author", "error", err)
@@ -58,7 +58,7 @@ func (r *AuthorRepositoryImpl) UpdateRepository(id uint64, patch *model.Author) 
 		return nil, err
 	}
 
-	updated, err := r.FindByIdRepository(id)
+	updated, err := r.FindById(id)
 	if err != nil {
 		slog.Error("Failed to find authors", "error", err)
 		return nil, err
