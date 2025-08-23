@@ -4,11 +4,13 @@ import (
 	"errors"
 	"testing"
 
+	"library/internal/domain/model"
 	"library/internal/domain/service"
 	"library/internal/test/builder"
 
 	mmockAuthorRepo "library/internal/test/mock"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -36,5 +38,98 @@ func TestGivenWrongAuthorWhenSaveInDBThenReturnError(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Error(t, errorExpected)
 	assert.Equal(t, errorExpected, err)
+	mockRepo.AssertExpectations(t)
+}
+
+func TestGivenAnAuthorWhenUpdateInDBThenReturnNilError(t *testing.T) {
+	authorID := uuid.New()
+	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
+	serviceAuthor := service.NewAuthorService(mockRepo)
+	author := builder.UpdateAuthorBuilder().Build()
+	mockRepo.On("Update", mock.Anything, mock.AnythingOfType("*model.Author")).Return(author, nil)
+	result, err := serviceAuthor.UpdateAuthor(authorID, author)
+
+	assert.Nil(t, err)
+	assert.NotEmpty(t, result)
+	mockRepo.AssertExpectations(t)
+}
+
+func TestGivenWrongAuthorWhenUpdateInDBThenReturnError(t *testing.T) {
+	authorID := uuid.New()
+	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
+	serviceAuthor := service.NewAuthorService(mockRepo)
+	author := builder.UpdateAuthorBuilder().Build()
+	errorExpected := errors.New("error updating into DB")
+	mockRepo.On("Update", mock.Anything, mock.Anything).Return(nil, errorExpected)
+
+	result, err := serviceAuthor.UpdateAuthor(authorID, author)
+
+	assert.Nil(t, result)
+	assert.NotNil(t, err)
+	assert.Error(t, err)
+	assert.Equal(t, errorExpected, err)
+	mockRepo.AssertExpectations(t)
+}
+
+func TestGivenAuthorsInDBWhenGetAuthorsThenReturnList(t *testing.T) {
+	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
+	serviceAuthor := service.NewAuthorService(mockRepo)
+	firstAuthor := *builder.NewAuthorBuilder().Build()
+	secondAuthor := *builder.UpdateAuthorBuilder().Build()
+	expectedAuthors := []model.Author{
+		firstAuthor,
+		secondAuthor,
+	}
+	mockRepo.On("FindAll").Return(expectedAuthors, nil)
+
+	result, err := serviceAuthor.GetAuthors()
+
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+	assert.Equal(t, expectedAuthors, result)
+	mockRepo.AssertExpectations(t)
+}
+
+func TestGivenErrorWhenGetAuthorsThenReturnError(t *testing.T) {
+	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
+	serviceAuthor := service.NewAuthorService(mockRepo)
+	expectedError := errors.New("error fetching authors")
+	mockRepo.On("FindAll").Return(nil, expectedError)
+
+	result, err := serviceAuthor.GetAuthors()
+
+	assert.Nil(t, result)
+	assert.NotNil(t, err)
+	assert.Equal(t, expectedError, err)
+	mockRepo.AssertExpectations(t)
+}
+
+func TestGivenValidIDWhenGetAuthorThenReturnAuthor(t *testing.T) {
+	authorID := uuid.New()
+	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
+	serviceAuthor := service.NewAuthorService(mockRepo)
+	expectedAuthor := builder.NewAuthorBuilder().Build()
+	mockRepo.On("FindById", authorID).Return(expectedAuthor, nil)
+
+	result, err := serviceAuthor.GetAuthor(authorID)
+
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+	assert.Equal(t, expectedAuthor, result)
+	mockRepo.AssertExpectations(t)
+}
+
+func TestGivenInvalidIDWhenGetAuthorThenReturnError(t *testing.T) {
+	authorID := uuid.New()
+	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
+	serviceAuthor := service.NewAuthorService(mockRepo)
+	expectedError := errors.New("author not found")
+	mockRepo.On("FindById", authorID).Return(nil, expectedError)
+
+	result, err := serviceAuthor.GetAuthor(authorID)
+
+	assert.Nil(t, result)
+	assert.NotNil(t, err)
+	assert.Equal(t, expectedError, err)
 	mockRepo.AssertExpectations(t)
 }

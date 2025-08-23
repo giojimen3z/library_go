@@ -3,13 +3,15 @@ package application
 import (
 	"library/internal/domain/model"
 	"library/internal/domain/service"
+
+	"github.com/google/uuid"
 )
 
 type AuthorUseCaseInterface interface {
 	CreateAuthorUseCase(author *model.Author) error
 	GetAuthorsUseCase() ([]model.Author, error)
-	GetAuthorUseCase(id uint64) (*model.Author, error)
-	UpdateAuthorUseCase(id uint64, patch *model.Author) (*model.Author, error)
+	GetAuthorUseCase(id uuid.UUID) (*model.Author, error)
+	UpdateAuthorUseCase(id uuid.UUID, patch *model.Author) (*model.Author, error)
 }
 
 type AuthorUseCase struct {
@@ -28,10 +30,10 @@ func (a *AuthorUseCase) GetAuthorsUseCase() ([]model.Author, error) {
 	return a.service.GetAuthors()
 }
 
-func (a *AuthorUseCase) GetAuthorUseCase(id uint64) (*model.Author, error) {
+func (a *AuthorUseCase) GetAuthorUseCase(id uuid.UUID) (*model.Author, error) {
 	return a.service.GetAuthor(id)
 }
 
-func (a *AuthorUseCase) UpdateAuthorUseCase(id uint64, patch *model.Author) (*model.Author, error) {
+func (a *AuthorUseCase) UpdateAuthorUseCase(id uuid.UUID, patch *model.Author) (*model.Author, error) {
 	return a.service.UpdateAuthor(id, patch)
 }

@@ -10,8 +10,8 @@ import (
 type AuthorServiceInterface interface {
 	CreateAuthor(author *model.Author) error
 	GetAuthors() ([]model.Author, error)
-	GetAuthor(id uint64) (*model.Author, error)
-	UpdateAuthor(id uint64, patch *model.Author) (*model.Author, error)
+	GetAuthor(id uuid.UUID) (*model.Author, error)
+	UpdateAuthor(id uuid.UUID, patch *model.Author) (*model.Author, error)
 }
 
 type AuthorService struct {
@@ -32,10 +32,10 @@ func (s *AuthorService) GetAuthors() ([]model.Author, error) {
 	return s.repo.FindAll()
 }
 
-func (s *AuthorService) GetAuthor(id uint64) (*model.Author, error) {
+func (s *AuthorService) GetAuthor(id uuid.UUID) (*model.Author, error) {
 	return s.repo.FindById(id)
 }
 
-func (s *AuthorService) UpdateAuthor(id uint64, patch *model.Author) (*model.Author, error) {
+func (s *AuthorService) UpdateAuthor(id uuid.UUID, patch *model.Author) (*model.Author, error) {
 	return s.repo.Update(id, patch)
 }

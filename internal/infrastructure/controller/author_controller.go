@@ -3,12 +3,12 @@ package controller
 import (
 	"log/slog"
 	"net/http"
-	"strconv"
 
 	"library/internal/application"
 	"library/internal/domain/model"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type AuthorController struct {
@@ -49,17 +49,17 @@ func (c *AuthorController) GetAll(ctx *gin.Context) {
 
 func (c *AuthorController) GetById(ctx *gin.Context) {
 	idParam := ctx.Param("id")
-	id, err := strconv.ParseUint(idParam, 10, 64)
+	id, err := uuid.Parse(idParam)
 	if err != nil {
 		slog.Error("Error trying to get parameter", "error", err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid ID"})
 		return
 	}
 
 	author, err := c.app.GetAuthorUseCase(id)
 	if err != nil {
 		slog.Error("Error trying to get author", "error", err)
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -68,7 +68,7 @@ func (c *AuthorController) GetById(ctx *gin.Context) {
 
 func (c *AuthorController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
-	id, err := strconv.ParseUint(idParam, 10, 64)
+	id, err := uuid.Parse(idParam)
 	if err != nil {
 		slog.Error("Error trying to get parameter", "error", err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})

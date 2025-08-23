@@ -29,6 +29,18 @@ func NewAuthorBuilder() *AuthorBuilder {
 	}
 }
 
+func UpdateAuthorBuilder() *AuthorBuilder {
+	date := time.Now()
+	return &AuthorBuilder{
+		id:        uuid.New(),
+		firstName: "John",
+		lastName:  "Doe",
+		bio:       "test update",
+		createdAt: &date,
+		updatedAt: &date,
+	}
+}
+
 func (b *AuthorBuilder) Build() *model.Author {
 	return &model.Author{
 		ID:        b.id,
