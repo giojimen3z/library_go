@@ -5,10 +5,12 @@ export
 endif
 
 # --- Quality variables ---
-COVER_MIN        ?= 0
+COVER_MIN        ?= 80
 COVER_FILE       := coverage.out
 PKG              := ./...
 GOLANGCI_VERSION ?= v1.64.7
+COVER_EXCLUDE    ?= internal/infrastructure/config|cmd/api|internal/test
+FILTERED_COVER_FILE := coverage.filtered.out
 
 .PHONY: deps tidy vet test cover lint-install lint \
         compose-up compose-logs compose-down db-psql db-reset \
@@ -39,13 +41,17 @@ test:
 
 cover:
 	@$(MAKE) -s test
-	@total=$$(go tool cover -func=$(COVER_FILE) | awk '/^total:/ {print $$3}' | tr -d '%'); \
+	@# Filtra líneas de archivos a excluir del coverage
+	@echo "mode: atomic" > $(FILTERED_COVER_FILE)
+	@grep -v -E "$(COVER_EXCLUDE)" $(COVER_FILE) | sed '/^mode:/d' >> $(FILTERED_COVER_FILE)
+	@total=$$(go tool cover -func=$(FILTERED_COVER_FILE) | awk '/^total:/ {print $$3}' | tr -d '%'); \
 	if awk "BEGIN {exit !($$total >= $(COVER_MIN))}"; then \
 	  printf "\033[32m✔ Coverage %.2f%% ≥ min %s%%\033[0m\n" $$total "$(COVER_MIN)"; \
 	else \
 	  printf "\033[31m✘ Coverage %.2f%% < min %s%%\033[0m\n" $$total "$(COVER_MIN)"; \
 	  exit 1; \
 	fi
+
 
 # ---------- Quality ----------
 lint-install:

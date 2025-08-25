@@ -41,28 +41,38 @@ func TestGivenWrongAuthorWhenSaveInDBThenReturnError(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-func TestGivenAnAuthorWhenUpdateInDBThenReturnNilError(t *testing.T) {
+func TestGivenAnAuthorWhenUpdateInDBThenReturnUpdatedEntity(t *testing.T) {
 	authorID := uuid.New()
 	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
 	serviceAuthor := service.NewAuthorService(mockRepo)
-	author := builder.UpdateAuthorBuilder().Build()
-	mockRepo.On("Update", mock.Anything, mock.AnythingOfType("*model.Author")).Return(author, nil)
-	result, err := serviceAuthor.UpdateAuthor(authorID, author)
+	patch := builder.UpdateAuthorBuilder().Build()
+	existing := builder.NewAuthorBuilder().Build()
+	updated := *existing
+	updated.Bio = patch.Bio
+
+	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
+	mockRepo.On("Update", authorID, patch).Return(nil, nil).Once()
+	mockRepo.On("FindById", authorID).Return(&updated, nil).Once()
+
+	result, err := serviceAuthor.UpdateAuthor(authorID, patch)
 
 	assert.Nil(t, err)
-	assert.NotEmpty(t, result)
+	assert.NotNil(t, result)
+	assert.Equal(t, updated.Bio, result.Bio)
 	mockRepo.AssertExpectations(t)
 }
 
-func TestGivenWrongAuthorWhenUpdateInDBThenReturnError(t *testing.T) {
+func TestGivenUpdateErrorWhenUpdateInDBThenReturnError(t *testing.T) {
 	authorID := uuid.New()
 	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
 	serviceAuthor := service.NewAuthorService(mockRepo)
-	author := builder.UpdateAuthorBuilder().Build()
+	patch := builder.UpdateAuthorBuilder().Build()
+	existing := builder.NewAuthorBuilder().Build()
 	errorExpected := errors.New("error updating into DB")
-	mockRepo.On("Update", mock.Anything, mock.Anything).Return(nil, errorExpected)
+	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
+	mockRepo.On("Update", authorID, patch).Return(nil, errorExpected).Once()
 
-	result, err := serviceAuthor.UpdateAuthor(authorID, author)
+	result, err := serviceAuthor.UpdateAuthor(authorID, patch)
 
 	assert.Nil(t, result)
 	assert.NotNil(t, err)

@@ -48,12 +48,18 @@ func TestGivenAuthorWhenAppUpdateInDataBaseThenReturnNilError(t *testing.T) {
 	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
 	svc := service.NewAuthorService(mockRepo)
 	app := application.NewAuthorUseCase(svc)
-	author := builder.UpdateAuthorBuilder().Build()
-	mockRepo.On("Update", mock.AnythingOfType("uuid.UUID"), mock.AnythingOfType("*model.Author")).Return(author, nil)
-	result, err := app.UpdateAuthorUseCase(authorID, author)
+	patch := builder.UpdateAuthorBuilder().Build()
+	existing := builder.NewAuthorBuilder().Build()
+	updated := *existing
+	updated.Bio = patch.Bio
+	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
+	mockRepo.On("Update", authorID, patch).Return(nil, nil).Once()
+	mockRepo.On("FindById", authorID).Return(&updated, nil).Once()
+	result, err := app.UpdateAuthorUseCase(authorID, patch)
 
 	assert.Nil(t, err)
 	assert.NotEmpty(t, result)
+	assert.Equal(t, updated.Bio, result.Bio)
 	mockRepo.AssertExpectations(t)
 
 }
@@ -63,11 +69,13 @@ func TestGivenWrongAuthorWhenAppUpdateInDataBaseThenReturnError(t *testing.T) {
 	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
 	svc := service.NewAuthorService(mockRepo)
 	app := application.NewAuthorUseCase(svc)
-	author := builder.UpdateAuthorBuilder().Build()
+	patch := builder.UpdateAuthorBuilder().Build()
+	existing := builder.NewAuthorBuilder().Build()
 	errorExpected := errors.New("error updating into DB")
-	mockRepo.On("Update", mock.Anything, mock.Anything).Return(nil, errorExpected)
+	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
+	mockRepo.On("Update", authorID, mock.AnythingOfType("*model.Author")).Return(nil, errorExpected).Once()
 
-	result, err := app.UpdateAuthorUseCase(authorID, author)
+	result, err := app.UpdateAuthorUseCase(authorID, patch)
 
 	assert.Nil(t, result)
 	assert.NotNil(t, err)

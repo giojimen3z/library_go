@@ -37,5 +37,11 @@ func (s *AuthorService) GetAuthor(id uuid.UUID) (*model.Author, error) {
 }
 
 func (s *AuthorService) UpdateAuthor(id uuid.UUID, patch *model.Author) (*model.Author, error) {
-	return s.repo.Update(id, patch)
+	if _, err := s.repo.FindById(id); err != nil {
+		return nil, err
+	}
+	if _, err := s.repo.Update(id, patch); err != nil {
+		return nil, err
+	}
+	return s.repo.FindById(id)
 }

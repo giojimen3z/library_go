@@ -13,14 +13,15 @@ import (
 // GORM DB along with the sqlmock handle. It registers cleanup to close the
 // underlying sql.DB automatically when the test finishes.
 func SetupGormWithSQLMock(t *testing.T) (*gorm.DB, sqlmock.Sqlmock) {
-	t.Helper()
+	to := t
+	to.Helper()
 
 	sqlDB, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("no se pudo crear sqlmock: %v", err)
+		to.Fatalf("failed to create sqlmock: %v", err)
 	}
 	// Ensure the underlying sql DB is closed after the test
-	t.Cleanup(func() { _ = sqlDB.Close() })
+	to.Cleanup(func() { _ = sqlDB.Close() })
 
 	dialectic := postgres.New(postgres.Config{
 		Conn:                 sqlDB,
@@ -30,7 +31,7 @@ func SetupGormWithSQLMock(t *testing.T) (*gorm.DB, sqlmock.Sqlmock) {
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
-		t.Fatalf("no se pudo abrir gorm con postgres sqlmock: %v", err)
+		to.Fatalf("failed to open gorm with postgres sqlmock: %v", err)
 	}
 
 	return gdb, mock

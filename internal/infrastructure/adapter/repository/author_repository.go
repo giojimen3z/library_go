@@ -49,21 +49,9 @@ func (r *AuthorRepositoryImpl) FindById(id uuid.UUID) (*model.Author, error) {
 }
 
 func (r *AuthorRepositoryImpl) Update(id uuid.UUID, patch *model.Author) (*model.Author, error) {
-	var existing model.Author
-	if err := r.db.First(&existing, id).Error; err != nil {
-		slog.Error("Error to find the author", "error", err)
+	if err := r.db.Model(&model.Author{}).Where("id = ?", id).Updates(patch).Error; err != nil {
+		slog.Error("Failed to update author", "error", err)
 		return nil, err
 	}
-	if err := r.db.Model(&existing).Updates(patch).Error; err != nil {
-		slog.Error("Failed update of author", "error", err)
-		return nil, err
-	}
-
-	updated, err := r.FindById(id)
-	if err != nil {
-		slog.Error("Failed to find authors", "error", err)
-		return nil, err
-	}
-
-	return updated, nil
+	return nil, nil
 }

@@ -72,8 +72,13 @@ func TestGivenAuthorWheUpdateInDataBaseInControllerThenReturnNilError(t *testing
 	app := application.NewAuthorUseCase(svc)
 	ctrl := controller.NewAuthorController(app)
 	author := builder.NewAuthorBuilder().Build()
-	mockRepo.On("Update", mock.Anything, mock.Anything).Return(author, nil)
-	body, _ := json.Marshal(author)
+	patch := builder.UpdateAuthorBuilder().Build()
+	updated := *author
+	updated.Bio = patch.Bio
+	mockRepo.On("FindById", author.ID).Return(author, nil).Once()
+	mockRepo.On("Update", author.ID, mock.AnythingOfType("*model.Author")).Return(nil, nil).Once()
+	mockRepo.On("FindById", author.ID).Return(&updated, nil).Once()
+	body, _ := json.Marshal(patch)
 	req, _ := http.NewRequest("PUT", "/authors/"+author.ID.String(), bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
@@ -94,9 +99,11 @@ func TestGivenWrongAuthorWhenUpdateInDataBaseInControllerThenReturnError(t *test
 	app := application.NewAuthorUseCase(svc)
 	ctrl := controller.NewAuthorController(app)
 	author := builder.NewAuthorBuilder().Build()
-	mockRepo.On("Update", mock.Anything, mock.Anything).Return(nil, errors.New("db error"))
+	patch := builder.UpdateAuthorBuilder().Build()
+	mockRepo.On("FindById", author.ID).Return(author, nil).Once()
+	mockRepo.On("Update", author.ID, mock.AnythingOfType("*model.Author")).Return(nil, errors.New("db error")).Once()
 
-	body, _ := json.Marshal(author)
+	body, _ := json.Marshal(patch)
 	req, _ := http.NewRequest("PUT", "/authors/"+author.ID.String(), bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
@@ -198,4 +205,75 @@ func TestGivenInvalidIDWhenGetAuthorInControllerThenReturnError(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	mockRepo.AssertExpectations(t)
+}
+
+func TestGivenInvalidJSONWhenCreateInControllerThenReturnBadRequest(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := new(mockAuthorRepo.AuthorRepoMock)
+	svc := service.NewAuthorService(mockRepo)
+	app := application.NewAuthorUseCase(svc)
+	ctrl := controller.NewAuthorController(app)
+	req, _ := http.NewRequest("POST", "/authors", bytes.NewBufferString("{invalid"))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+	c.Request = req
+
+	ctrl.Create(c)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+}
+
+func TestGivenInvalidUUIDWhenGetAuthorInControllerThenReturnInternalServerError(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := new(mockAuthorRepo.AuthorRepoMock)
+	svc := service.NewAuthorService(mockRepo)
+	app := application.NewAuthorUseCase(svc)
+	ctrl := controller.NewAuthorController(app)
+	req, _ := http.NewRequest("GET", "/authors/invalid-uuid", nil)
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+	c.Params = []gin.Param{{Key: "id", Value: "invalid-uuid"}}
+	c.Request = req
+
+	ctrl.GetById(c)
+
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+}
+
+func TestGivenInvalidUUIDWhenUpdateInControllerThenReturnBadRequest(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := new(mockAuthorRepo.AuthorRepoMock)
+	svc := service.NewAuthorService(mockRepo)
+	app := application.NewAuthorUseCase(svc)
+	ctrl := controller.NewAuthorController(app)
+	req, _ := http.NewRequest("PUT", "/authors/invalid-uuid", bytes.NewBufferString("{}"))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+	c.Params = []gin.Param{{Key: "id", Value: "invalid-uuid"}}
+	c.Request = req
+
+	ctrl.Update(c)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+}
+
+func TestGivenInvalidJSONWhenUpdateInControllerThenReturnBadRequest(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := new(mockAuthorRepo.AuthorRepoMock)
+	svc := service.NewAuthorService(mockRepo)
+	app := application.NewAuthorUseCase(svc)
+	ctrl := controller.NewAuthorController(app)
+	validID := uuid.New().String()
+	req, _ := http.NewRequest("PUT", "/authors/"+validID, bytes.NewBufferString("{invalid"))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+	c.Params = []gin.Param{{Key: "id", Value: validID}}
+	c.Request = req
+
+	ctrl.Update(c)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }

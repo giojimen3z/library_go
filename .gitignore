@@ -13,6 +13,7 @@
 *.so
 *.dylib
 coverage.out
+coverage.filtered.out
 # Build artifacts
 *.a
 *.o
