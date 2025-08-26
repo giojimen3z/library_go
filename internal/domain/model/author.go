@@ -13,4 +13,5 @@ type Author struct {
 	Bio       string    `json:"bio" gorm:"size:500"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`
+	Books     []Book    `json:"books,omitempty" gorm:"many2many:book_authors;"`
 }
