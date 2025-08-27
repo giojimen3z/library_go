@@ -1,0 +1,17 @@
+package model
+
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
+type Author struct {
+	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
+	FirstName string    `json:"first_name" gorm:"size:200;not null"`
+	LastName  string    `json:"last_name" gorm:"size:200;not null"`
+	Bio       string    `json:"bio" gorm:"size:500"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`
+	Books     []Book    `json:"books,omitempty" gorm:"many2many:book_authors;"`
+}

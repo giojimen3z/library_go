@@ -7,8 +7,6 @@ on:
 
 env:
   GO_VERSION: "1.24.x"
-  COVER_MIN: "0"
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,7 +19,7 @@ jobs:
       - run: make deps || true
       - run: make tidy || true
       - run: make vet || true
-      - run: make COVER_MIN=${{ env.COVER_MIN }} cover
+      - run: make cover
       - if: always()
         uses: actions/upload-artifact@v4
         with:

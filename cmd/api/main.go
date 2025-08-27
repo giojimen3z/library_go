@@ -1,3 +1,7 @@
 package main
 
-// TODO: implement main logic
+import "library/internal/infrastructure/config"
+
+func main() {
+	config.StartApp()
+}

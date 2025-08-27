@@ -1,5 +1,6 @@
 run:
   timeout: 3m
+  tests: true
 
 issues:
   exclude-dirs:
@@ -16,20 +17,8 @@ linters:
     - staticcheck
     - errcheck
     - ineffassign
+    - unused
     - gofmt
     - goimports
-    - unused
+  disable:
     - revive
-
-linters-settings:
-  gofmt:
-    simplify: true
-
-  revive:
-    severity: warning
-    confidence: 0.8
-    rules:
-      - name: exported
-        severity: warning
-      - name: var-naming
-        severity: warning
