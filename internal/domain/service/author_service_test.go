@@ -51,7 +51,7 @@ func TestGivenAnAuthorWhenUpdateInDBThenReturnUpdatedEntity(t *testing.T) {
 	updated.Bio = patch.Bio
 
 	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
-	mockRepo.On("Update", authorID, patch).Return(nil, nil).Once()
+	mockRepo.On("Update", authorID, patch).Return(patch, nil).Once()
 	mockRepo.On("FindById", authorID).Return(&updated, nil).Once()
 
 	result, err := serviceAuthor.UpdateAuthor(authorID, patch)
@@ -70,7 +70,7 @@ func TestGivenUpdateErrorWhenUpdateInDBThenReturnError(t *testing.T) {
 	existing := builder.NewAuthorBuilder().Build()
 	errorExpected := errors.New("error updating into DB")
 	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
-	mockRepo.On("Update", authorID, patch).Return(nil, errorExpected).Once()
+	mockRepo.On("Update", authorID, patch).Return(&model.Author{}, errorExpected).Once()
 
 	result, err := serviceAuthor.UpdateAuthor(authorID, patch)
 
@@ -104,11 +104,11 @@ func TestGivenErrorWhenGetAuthorsThenReturnError(t *testing.T) {
 	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
 	serviceAuthor := service.NewAuthorService(mockRepo)
 	expectedError := errors.New("error fetching authors")
-	mockRepo.On("FindAll").Return(nil, expectedError)
+	mockRepo.On("FindAll").Return([]model.Author{}, expectedError)
 
 	result, err := serviceAuthor.GetAuthors()
 
-	assert.Nil(t, result)
+	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	mockRepo.AssertExpectations(t)
@@ -134,11 +134,11 @@ func TestGivenInvalidIDWhenGetAuthorThenReturnError(t *testing.T) {
 	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
 	serviceAuthor := service.NewAuthorService(mockRepo)
 	expectedError := errors.New("author not found")
-	mockRepo.On("FindById", authorID).Return(nil, expectedError)
+	mockRepo.On("FindById", authorID).Return(&model.Author{}, expectedError)
 
 	result, err := serviceAuthor.GetAuthor(authorID)
 
-	assert.Nil(t, result)
+	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	mockRepo.AssertExpectations(t)
