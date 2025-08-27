@@ -53,8 +53,9 @@ func TestGivenAuthorWhenAppUpdateInDataBaseThenReturnNilError(t *testing.T) {
 	updated := *existing
 	updated.Bio = patch.Bio
 	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
-	mockRepo.On("Update", authorID, patch).Return(nil, nil).Once()
+	mockRepo.On("Update", mock.Anything, patch).Return(patch, nil).Once()
 	mockRepo.On("FindById", authorID).Return(&updated, nil).Once()
+
 	result, err := app.UpdateAuthorUseCase(authorID, patch)
 
 	assert.Nil(t, err)
@@ -73,7 +74,7 @@ func TestGivenWrongAuthorWhenAppUpdateInDataBaseThenReturnError(t *testing.T) {
 	existing := builder.NewAuthorBuilder().Build()
 	errorExpected := errors.New("error updating into DB")
 	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
-	mockRepo.On("Update", authorID, mock.AnythingOfType("*model.Author")).Return(nil, errorExpected).Once()
+	mockRepo.On("Update", authorID, mock.AnythingOfType("*model.Author")).Return(&model.Author{}, errorExpected).Once()
 
 	result, err := app.UpdateAuthorUseCase(authorID, patch)
 
@@ -109,11 +110,11 @@ func TestGivenErrorWhenAppGetAuthorsThenReturnError(t *testing.T) {
 	svc := service.NewAuthorService(mockRepo)
 	app := application.NewAuthorUseCase(svc)
 	expectedError := errors.New("error fetching authors")
-	mockRepo.On("FindAll").Return(nil, expectedError)
+	mockRepo.On("FindAll").Return([]model.Author{}, expectedError)
 
 	result, err := app.GetAuthorsUseCase()
 
-	assert.Nil(t, result)
+	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	mockRepo.AssertExpectations(t)
@@ -141,11 +142,11 @@ func TestGivenInvalidIDWhenAppGetAuthorThenReturnError(t *testing.T) {
 	svc := service.NewAuthorService(mockRepo)
 	app := application.NewAuthorUseCase(svc)
 	expectedError := errors.New("author not found")
-	mockRepo.On("FindById", authorID).Return(nil, expectedError)
+	mockRepo.On("FindById", authorID).Return(&model.Author{}, expectedError)
 
 	result, err := app.GetAuthorUseCase(authorID)
 
-	assert.Nil(t, result)
+	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	mockRepo.AssertExpectations(t)
