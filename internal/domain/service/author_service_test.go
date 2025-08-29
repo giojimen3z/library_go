@@ -20,7 +20,7 @@ func TestGivenAnAuthorWhenSaveInDBThenReturnNilError(t *testing.T) {
 	serviceAuthor := service.NewAuthorService(mockRepo)
 	author := builder.NewAuthorBuilder().Build()
 	mockRepo.On("Save", mock.AnythingOfType("*model.Author")).Return(nil)
-	err := serviceAuthor.CreateAuthor(author)
+	err := serviceAuthor.CreateAuthor(t.Context(), author)
 
 	assert.Nil(t, err)
 	mockRepo.AssertExpectations(t)
@@ -33,7 +33,7 @@ func TestGivenWrongAuthorWhenSaveInDBThenReturnError(t *testing.T) {
 	errorExpected := errors.New("error saving into DB")
 	mockRepo.On("Save", mock.Anything).Return(errorExpected)
 
-	err := serviceAuthor.CreateAuthor(author)
+	err := serviceAuthor.CreateAuthor(t.Context(), author)
 
 	assert.NotNil(t, err)
 	assert.Error(t, errorExpected)
@@ -54,7 +54,7 @@ func TestGivenAnAuthorWhenUpdateInDBThenReturnUpdatedEntity(t *testing.T) {
 	mockRepo.On("Update", authorID, patch).Return(patch, nil).Once()
 	mockRepo.On("FindById", authorID).Return(&updated, nil).Once()
 
-	result, err := serviceAuthor.UpdateAuthor(authorID, patch)
+	result, err := serviceAuthor.UpdateAuthor(t.Context(), authorID, patch)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
@@ -72,7 +72,7 @@ func TestGivenUpdateErrorWhenUpdateInDBThenReturnError(t *testing.T) {
 	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
 	mockRepo.On("Update", authorID, patch).Return(&model.Author{}, errorExpected).Once()
 
-	result, err := serviceAuthor.UpdateAuthor(authorID, patch)
+	result, err := serviceAuthor.UpdateAuthor(t.Context(), authorID, patch)
 
 	assert.Nil(t, result)
 	assert.NotNil(t, err)
@@ -92,7 +92,7 @@ func TestGivenAuthorsInDBWhenGetAuthorsThenReturnList(t *testing.T) {
 	}
 	mockRepo.On("FindAll").Return(expectedAuthors, nil)
 
-	result, err := serviceAuthor.GetAuthors()
+	result, err := serviceAuthor.GetAuthors(t.Context())
 
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
@@ -106,7 +106,7 @@ func TestGivenErrorWhenGetAuthorsThenReturnError(t *testing.T) {
 	expectedError := errors.New("error fetching authors")
 	mockRepo.On("FindAll").Return([]model.Author{}, expectedError)
 
-	result, err := serviceAuthor.GetAuthors()
+	result, err := serviceAuthor.GetAuthors(t.Context())
 
 	assert.Empty(t, result)
 	assert.NotNil(t, err)
@@ -121,7 +121,7 @@ func TestGivenValidIDWhenGetAuthorThenReturnAuthor(t *testing.T) {
 	expectedAuthor := builder.NewAuthorBuilder().Build()
 	mockRepo.On("FindById", authorID).Return(expectedAuthor, nil)
 
-	result, err := serviceAuthor.GetAuthor(authorID)
+	result, err := serviceAuthor.GetAuthor(t.Context(), authorID)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
@@ -136,7 +136,7 @@ func TestGivenInvalidIDWhenGetAuthorThenReturnError(t *testing.T) {
 	expectedError := errors.New("author not found")
 	mockRepo.On("FindById", authorID).Return(&model.Author{}, expectedError)
 
-	result, err := serviceAuthor.GetAuthor(authorID)
+	result, err := serviceAuthor.GetAuthor(t.Context(), authorID)
 
 	assert.Empty(t, result)
 	assert.NotNil(t, err)

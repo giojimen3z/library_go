@@ -21,7 +21,7 @@ func TestGivenAuthorWhenAppCreateAuthorThenReturnNilError(t *testing.T) {
 	app := application.NewAuthorUseCase(svc)
 	author := builder.NewAuthorBuilder().Build()
 	mockRepo.On("Save", mock.AnythingOfType("*model.Author")).Return(nil)
-	err := app.CreateAuthorUseCase(author)
+	err := app.CreateAuthorUseCase(t.Context(), author)
 
 	assert.Nil(t, err)
 	mockRepo.AssertExpectations(t)
@@ -35,7 +35,7 @@ func TestGivenWrongAuthorWhenAppCreateAuthorThenReturnError(t *testing.T) {
 	errorExpected := errors.New("error saving DB")
 	mockRepo.On("Save", mock.Anything).Return(errorExpected)
 
-	err := app.CreateAuthorUseCase(author)
+	err := app.CreateAuthorUseCase(t.Context(), author)
 
 	assert.NotNil(t, err)
 	assert.Error(t, err)
@@ -56,7 +56,7 @@ func TestGivenAuthorWhenAppUpdateInDataBaseThenReturnNilError(t *testing.T) {
 	mockRepo.On("Update", mock.Anything, patch).Return(patch, nil).Once()
 	mockRepo.On("FindById", authorID).Return(&updated, nil).Once()
 
-	result, err := app.UpdateAuthorUseCase(authorID, patch)
+	result, err := app.UpdateAuthorUseCase(t.Context(), authorID, patch)
 
 	assert.Nil(t, err)
 	assert.NotEmpty(t, result)
@@ -76,7 +76,7 @@ func TestGivenWrongAuthorWhenAppUpdateInDataBaseThenReturnError(t *testing.T) {
 	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
 	mockRepo.On("Update", authorID, mock.AnythingOfType("*model.Author")).Return(&model.Author{}, errorExpected).Once()
 
-	result, err := app.UpdateAuthorUseCase(authorID, patch)
+	result, err := app.UpdateAuthorUseCase(t.Context(), authorID, patch)
 
 	assert.Nil(t, result)
 	assert.NotNil(t, err)
@@ -97,7 +97,7 @@ func TestGivenAuthorsInDBWhenAppGetAuthorsThenReturnList(t *testing.T) {
 	}
 	mockRepo.On("FindAll").Return(expectedAuthors, nil)
 
-	result, err := app.GetAuthorsUseCase()
+	result, err := app.GetAuthorsUseCase(t.Context())
 
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
@@ -112,7 +112,7 @@ func TestGivenErrorWhenAppGetAuthorsThenReturnError(t *testing.T) {
 	expectedError := errors.New("error fetching authors")
 	mockRepo.On("FindAll").Return([]model.Author{}, expectedError)
 
-	result, err := app.GetAuthorsUseCase()
+	result, err := app.GetAuthorsUseCase(t.Context())
 
 	assert.Empty(t, result)
 	assert.NotNil(t, err)
@@ -128,7 +128,7 @@ func TestGivenValidIDWhenAppGetAuthorThenReturnAuthor(t *testing.T) {
 	expectedAuthor := builder.NewAuthorBuilder().Build()
 	mockRepo.On("FindById", authorID).Return(expectedAuthor, nil)
 
-	result, err := app.GetAuthorUseCase(authorID)
+	result, err := app.GetAuthorUseCase(t.Context(), authorID)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
@@ -144,7 +144,7 @@ func TestGivenInvalidIDWhenAppGetAuthorThenReturnError(t *testing.T) {
 	expectedError := errors.New("author not found")
 	mockRepo.On("FindById", authorID).Return(&model.Author{}, expectedError)
 
-	result, err := app.GetAuthorUseCase(authorID)
+	result, err := app.GetAuthorUseCase(t.Context(), authorID)
 
 	assert.Empty(t, result)
 	assert.NotNil(t, err)
