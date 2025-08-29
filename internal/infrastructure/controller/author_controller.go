@@ -28,7 +28,7 @@ func (c *AuthorController) Create(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.app.CreateAuthorUseCase(&author); err != nil {
+	if err := c.app.CreateAuthorUseCase(ctx.Request.Context(), &author); err != nil {
 		slog.Error("Error trying to create author", "error", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -38,7 +38,7 @@ func (c *AuthorController) Create(ctx *gin.Context) {
 }
 
 func (c *AuthorController) GetAll(ctx *gin.Context) {
-	authors, err := c.app.GetAuthorsUseCase()
+	authors, err := c.app.GetAuthorsUseCase(ctx.Request.Context())
 	if err != nil {
 		slog.Error("Error trying to find authors", "error", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -56,7 +56,7 @@ func (c *AuthorController) GetById(ctx *gin.Context) {
 		return
 	}
 
-	author, err := c.app.GetAuthorUseCase(id)
+	author, err := c.app.GetAuthorUseCase(ctx.Request.Context(), id)
 	if err != nil {
 		slog.Error("Error trying to get author", "error", err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -82,7 +82,7 @@ func (c *AuthorController) Update(ctx *gin.Context) {
 		return
 	}
 
-	updated, err := c.app.UpdateAuthorUseCase(id, &patch)
+	updated, err := c.app.UpdateAuthorUseCase(ctx.Request.Context(), id, &patch)
 	if err != nil {
 		slog.Error("Error trying to update author", "error", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
