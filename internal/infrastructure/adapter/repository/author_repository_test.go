@@ -35,7 +35,7 @@ func TestGivenValidAuthorWhenSaveThenReturnsNil(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(author.ID))
 	sqlMock.ExpectCommit()
 
-	err := repo.Save(author)
+	err := repo.Save(t.Context(), author)
 
 	assert.NoError(t, err)
 	assert.NoError(t, sqlMock.ExpectationsWereMet())
@@ -52,7 +52,7 @@ func TestGivenDBErrorWhenSaveThenReturnsError(t *testing.T) {
 		WillReturnError(expectedErr)
 	sqlMock.ExpectRollback()
 
-	err := repo.Save(author)
+	err := repo.Save(t.Context(), author)
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, expectedErr.Error())
@@ -69,7 +69,7 @@ func TestGivenAuthorsWhenFindAllThenReturnsSlice(t *testing.T) {
 			AddRow(a1.ID, a1.FirstName, a1.LastName, a1.Bio, a1.CreatedAt, a1.UpdatedAt).
 			AddRow(a2.ID, a2.FirstName, a2.LastName, a2.Bio, a2.CreatedAt, a2.UpdatedAt))
 
-	authors, err := repo.FindAll()
+	authors, err := repo.FindAll(t.Context())
 
 	assert.NoError(t, err)
 	assert.Len(t, authors, 2)
@@ -83,7 +83,7 @@ func TestGivenDBErrorWhenFindAllThenReturnsError(t *testing.T) {
 	sqlMock.ExpectQuery(authorsSelectAllRegex).
 		WillReturnError(expectedErr)
 
-	authors, err := repo.FindAll()
+	authors, err := repo.FindAll(t.Context())
 
 	assert.Error(t, err)
 	assert.Nil(t, authors)
@@ -100,7 +100,7 @@ func TestGivenExistingAuthorIDWhenFindByIdThenReturnsAuthor(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"id", "first_name", "last_name", "bio", "created_at", "updated_at"}).
 			AddRow(a.ID, a.FirstName, a.LastName, a.Bio, a.CreatedAt, a.UpdatedAt))
 
-	got, err := repo.FindById(a.ID)
+	got, err := repo.FindById(t.Context(), a.ID)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, got)
@@ -117,7 +117,7 @@ func TestGivenUnknownAuthorIDWhenFindByIdThenReturnsError(t *testing.T) {
 		WithArgs(a.ID, sqlmock.AnyArg()).
 		WillReturnError(gorm.ErrRecordNotFound)
 
-	got, err := repo.FindById(a.ID)
+	got, err := repo.FindById(t.Context(), a.ID)
 
 	assert.Error(t, err)
 	assert.Nil(t, got)
@@ -134,7 +134,7 @@ func TestGivenValidPatchWhenUpdateThenReturnsNilError(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(0, 1))
 	sqlMock.ExpectCommit()
 
-	got, err := repo.Update(original.ID, patch)
+	got, err := repo.Update(t.Context(), original.ID, patch)
 
 	assert.NoError(t, err)
 	assert.Nil(t, got)
@@ -150,7 +150,7 @@ func TestGivenDBErrorWhenUpdateThenReturnsError(t *testing.T) {
 		WillReturnError(errors.New(errUpdateFailed))
 	sqlMock.ExpectRollback()
 
-	got, err := repo.Update(orig.ID, &model.Author{Bio: "x"})
+	got, err := repo.Update(t.Context(), orig.ID, &model.Author{Bio: "x"})
 
 	assert.Error(t, err)
 	assert.Nil(t, got)

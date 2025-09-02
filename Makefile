@@ -66,6 +66,17 @@ lint: lint-install
 	@golangci-lint run ./...
 
 # ---------- DevOps / Runtime ----------
+
+#Run Only de DB container
+compose-db-up:
+	docker compose up -d db
+
+compose-db-logs:
+	docker compose logs -f db
+
+compose-db-down:
+	docker compose rm -sf db
+
 compose-up:
 	docker compose up -d --build
 

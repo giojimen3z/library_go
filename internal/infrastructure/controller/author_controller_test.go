@@ -76,7 +76,7 @@ func TestGivenAuthorWheUpdateInDataBaseInControllerThenReturnNilError(t *testing
 	updated := *author
 	updated.Bio = patch.Bio
 	mockRepo.On("FindById", author.ID).Return(author, nil).Once()
-	mockRepo.On("Update", author.ID, mock.AnythingOfType("*model.Author")).Return(nil, nil).Once()
+	mockRepo.On("Update", author.ID, mock.AnythingOfType("*model.Author")).Return(author, nil).Once()
 	mockRepo.On("FindById", author.ID).Return(&updated, nil).Once()
 	body, _ := json.Marshal(patch)
 	req, _ := http.NewRequest("PUT", "/authors/"+author.ID.String(), bytes.NewBuffer(body))
@@ -101,7 +101,7 @@ func TestGivenWrongAuthorWhenUpdateInDataBaseInControllerThenReturnError(t *test
 	author := builder.NewAuthorBuilder().Build()
 	patch := builder.UpdateAuthorBuilder().Build()
 	mockRepo.On("FindById", author.ID).Return(author, nil).Once()
-	mockRepo.On("Update", author.ID, mock.AnythingOfType("*model.Author")).Return(nil, errors.New("db error")).Once()
+	mockRepo.On("Update", author.ID, mock.AnythingOfType("*model.Author")).Return(&model.Author{}, errors.New("db error")).Once()
 
 	body, _ := json.Marshal(patch)
 	req, _ := http.NewRequest("PUT", "/authors/"+author.ID.String(), bytes.NewBuffer(body))
@@ -149,7 +149,7 @@ func TestGivenErrorWhenGetAuthorsInControllerThenReturnError(t *testing.T) {
 	app := application.NewAuthorUseCase(svc)
 	ctrl := controller.NewAuthorController(app)
 
-	mockRepo.On("FindAll").Return(nil, errors.New("error fetching authors"))
+	mockRepo.On("FindAll").Return([]model.Author{}, errors.New("error fetching authors"))
 
 	req, _ := http.NewRequest("GET", "/authors", nil)
 	w := httptest.NewRecorder()

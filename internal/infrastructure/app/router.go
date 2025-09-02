@@ -19,7 +19,16 @@ func NewHandlers(author *controller.AuthorController) Handlers {
 func RegisterRoutes(r *gin.Engine, h Handlers) {
 	base := r.Group("/api/v1/library")
 
+	healthRoutes(r)
 	registerAuthorRoutes(base, h.Author)
+}
+
+func healthRoutes(r *gin.Engine) {
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "pong",
+		})
+	})
 }
 
 func registerAuthorRoutes(group *gin.RouterGroup, c *controller.AuthorController) {
