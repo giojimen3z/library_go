@@ -1,0 +1,23 @@
+meta {
+  name: update_author
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/authors/{{authorId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "first_name": "Gabriel",
+    "last_name": "García Márquez",
+    "bio": "ganador del Premio Nobel de Literatura en 1982."
+    }
+}
+
+settings {
+  encodeUrl: true
+}

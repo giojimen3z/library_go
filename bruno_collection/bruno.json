@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "name": "Library",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "vars": {
+    "baseUrl": "http://localhost:8080/api/v1/library",
+    "authorId": "de8cfd5b-79db-47a1-83db-3a4fa2a8c5bf",
+    "createdAt": "{{$timestamp}}",
+    "updatedAt": "{{$timestamp}}"
+  }
+}

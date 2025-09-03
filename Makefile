@@ -77,6 +77,10 @@ compose-db-logs:
 compose-db-down:
 	docker compose rm -sf db
 
+compose-db-reset:
+	docker compose down -v
+	docker compose up -d db
+
 compose-up:
 	docker compose up -d --build
 
