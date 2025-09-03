@@ -1,0 +1,15 @@
+meta {
+  name: get_author
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/authors/{{authorId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

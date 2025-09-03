@@ -31,13 +31,13 @@ func NewBookBuilder() *BookBuilder {
 	}
 }
 
-func (b *BookBuilder) WithID(id uuid.UUID) *BookBuilder         { b.id = id; return b }
-func (b *BookBuilder) WithTitle(t string) *BookBuilder          { b.title = t; return b }
-func (b *BookBuilder) WithISBN(s string) *BookBuilder           { b.isbn = s; return b }
-func (b *BookBuilder) WithDescription(d string) *BookBuilder    { b.description = d; return b }
-func (b *BookBuilder) WithPublishedYear(y int) *BookBuilder     { b.publishedYear = y; return b }
-func (b *BookBuilder) WithCreatedAt(t time.Time) *BookBuilder   { b.createdAt = &t; return b }
-func (b *BookBuilder) WithUpdatedAt(t time.Time) *BookBuilder   { b.updatedAt = &t; return b }
+func (b *BookBuilder) WithID(id uuid.UUID) *BookBuilder       { b.id = id; return b }
+func (b *BookBuilder) WithTitle(t string) *BookBuilder        { b.title = t; return b }
+func (b *BookBuilder) WithISBN(s string) *BookBuilder         { b.isbn = s; return b }
+func (b *BookBuilder) WithDescription(d string) *BookBuilder  { b.description = d; return b }
+func (b *BookBuilder) WithPublishedYear(y int) *BookBuilder   { b.publishedYear = y; return b }
+func (b *BookBuilder) WithCreatedAt(t time.Time) *BookBuilder { b.createdAt = &t; return b }
+func (b *BookBuilder) WithUpdatedAt(t time.Time) *BookBuilder { b.updatedAt = &t; return b }
 
 func (b *BookBuilder) Build() *model.Book {
 	return &model.Book{

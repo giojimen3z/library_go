@@ -23,14 +23,14 @@ func NewLoanBuilder() *LoanBuilder {
 	now := time.Now()
 	due := now.AddDate(0, 0, 14)
 	return &LoanBuilder{
-		id:        uuid.New(),
-		memberID:  uuid.New(),
-		copyID:    uuid.New(),
-		loanedAt:  &now,
-		dueDate:   &due,
+		id:         uuid.New(),
+		memberID:   uuid.New(),
+		copyID:     uuid.New(),
+		loanedAt:   &now,
+		dueDate:    &due,
 		returnedAt: nil,
-		fineCents: 0,
-		createdAt: &now,
+		fineCents:  0,
+		createdAt:  &now,
 	}
 }
 
