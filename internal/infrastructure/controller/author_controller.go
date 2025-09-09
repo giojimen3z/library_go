@@ -4,11 +4,11 @@ import (
 	"log/slog"
 	"net/http"
 
-	"library/internal/application"
-	"library/internal/domain/model"
-
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
+	"library/internal/application"
+	"library/internal/domain/model"
 )
 
 type AuthorController struct {

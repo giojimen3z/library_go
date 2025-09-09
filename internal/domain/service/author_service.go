@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 
+	"github.com/google/uuid"
+
 	"library/internal/domain/model"
 	"library/internal/domain/port"
-
-	"github.com/google/uuid"
 )
 
 type AuthorServiceInterface interface {

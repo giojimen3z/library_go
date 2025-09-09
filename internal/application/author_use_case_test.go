@@ -4,15 +4,15 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+
 	"library/internal/application"
 	"library/internal/domain/model"
 	"library/internal/domain/service"
 	"library/internal/test/builder"
 	mmockAuthorRepo "library/internal/test/mock"
-
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestGivenAuthorWhenAppCreateAuthorThenReturnNilError(t *testing.T) {
