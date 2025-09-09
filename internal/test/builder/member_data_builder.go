@@ -3,9 +3,9 @@ package builder
 import (
 	"time"
 
-	"library/internal/domain/model"
-
 	"github.com/google/uuid"
+
+	"library/internal/domain/model"
 )
 
 type MemberBuilder struct {
