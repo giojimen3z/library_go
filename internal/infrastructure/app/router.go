@@ -1,9 +1,9 @@
 package app
 
 import (
-	"library/internal/infrastructure/controller"
-
 	"github.com/gin-gonic/gin"
+
+	"library/internal/infrastructure/controller"
 )
 
 type Handlers struct {

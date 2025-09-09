@@ -5,14 +5,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
+
 	"library/internal/domain/model"
 	"library/internal/infrastructure/adapter/repository"
 	"library/internal/test/builder"
 	"library/internal/test/mock"
-
-	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
 const (

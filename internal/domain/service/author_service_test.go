@@ -4,15 +4,14 @@ import (
 	"errors"
 	"testing"
 
-	"library/internal/domain/model"
-	"library/internal/domain/service"
-	"library/internal/test/builder"
-
-	mmockAuthorRepo "library/internal/test/mock"
-
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"library/internal/domain/model"
+	"library/internal/domain/service"
+	"library/internal/test/builder"
+	mmockAuthorRepo "library/internal/test/mock"
 )
 
 func TestGivenAnAuthorWhenSaveInDBThenReturnNilError(t *testing.T) {
@@ -50,9 +49,7 @@ func TestGivenAnAuthorWhenUpdateInDBThenReturnUpdatedEntity(t *testing.T) {
 	updated := *existing
 	updated.Bio = patch.Bio
 
-	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
 	mockRepo.On("Update", authorID, patch).Return(patch, nil).Once()
-	mockRepo.On("FindById", authorID).Return(&updated, nil).Once()
 
 	result, err := serviceAuthor.UpdateAuthor(t.Context(), authorID, patch)
 
@@ -67,14 +64,12 @@ func TestGivenUpdateErrorWhenUpdateInDBThenReturnError(t *testing.T) {
 	mockRepo := new(mmockAuthorRepo.AuthorRepoMock)
 	serviceAuthor := service.NewAuthorService(mockRepo)
 	patch := builder.UpdateAuthorBuilder().Build()
-	existing := builder.NewAuthorBuilder().Build()
 	errorExpected := errors.New("error updating into DB")
-	mockRepo.On("FindById", authorID).Return(existing, nil).Once()
 	mockRepo.On("Update", authorID, patch).Return(&model.Author{}, errorExpected).Once()
 
 	result, err := serviceAuthor.UpdateAuthor(t.Context(), authorID, patch)
 
-	assert.Nil(t, result)
+	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.Error(t, err)
 	assert.Equal(t, errorExpected, err)

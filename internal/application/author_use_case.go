@@ -3,10 +3,10 @@ package application
 import (
 	"context"
 
+	"github.com/google/uuid"
+
 	"library/internal/domain/model"
 	"library/internal/domain/service"
-
-	"github.com/google/uuid"
 )
 
 type AuthorUseCaseInterface interface {
