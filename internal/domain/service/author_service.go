@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"library/internal/domain/model"
 	"library/internal/domain/port"
 
@@ -38,11 +39,5 @@ func (s *AuthorService) GetAuthor(ctx context.Context, id uuid.UUID) (*model.Aut
 }
 
 func (s *AuthorService) UpdateAuthor(ctx context.Context, id uuid.UUID, patch *model.Author) (*model.Author, error) {
-	if _, err := s.repo.FindById(ctx, id); err != nil {
-		return nil, err
-	}
-	if _, err := s.repo.Update(ctx, id, patch); err != nil {
-		return nil, err
-	}
-	return s.repo.FindById(ctx, id)
+	return s.repo.Update(ctx, id, patch)
 }
