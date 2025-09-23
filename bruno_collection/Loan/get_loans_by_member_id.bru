@@ -1,0 +1,15 @@
+meta {
+  name: get_loans_by_member_id
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/loans/memberList/{{memberId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

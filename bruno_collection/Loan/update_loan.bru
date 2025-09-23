@@ -1,0 +1,23 @@
+meta {
+  name: update_loan
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/loans/{{authorId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id": "fc82fe88-83f0-4c18-a3da-436eeceec74f",
+    "returned_at": {{returnedAtInstant}},
+    "fine_cents": 0
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,15 @@
+meta {
+  name: get_loan
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/loans/{{loanId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

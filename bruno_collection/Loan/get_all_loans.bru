@@ -1,0 +1,11 @@
+meta {
+  name: get_all_loans
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/loans
+  body: none
+  auth: inherit
+}

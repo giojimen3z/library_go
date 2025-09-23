@@ -1,0 +1,35 @@
+meta {
+  name: create_loan
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/loans
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "member_id": "7bb187e8-1ad9-4d36-b856-126247f0c4fa",
+    "copy_id": "2c0a9e8a-1472-48f4-bd11-56f919e4d983",
+    "loaned_at": "{{loanedAt}}",
+    "due_date": "{{dueDate}}",
+    "returned_at": null,
+    "fine_cents": 0,
+    "created_at": "{{createdAt}}"
+  }
+}
+
+script:pre-request {
+  const loanedAt = new Date();
+  const dueDate = new Date(loanedAt);
+  dueDate.setDate(dueDate.getDate() + 5);
+  
+  bru.setVar("loanedAt", loanedAt.toISOString());
+  bru.setVar("dueDate", dueDate.toISOString());
+  
+  console.log("loanedAt:", bru.getVar("loanedAt"));
+  console.log("dueDate:", bru.getVar("dueDate"));
+}

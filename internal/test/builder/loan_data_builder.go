@@ -34,6 +34,21 @@ func NewLoanBuilder() *LoanBuilder {
 	}
 }
 
+func UpdateLoanBuilder() *LoanBuilder {
+	now := time.Now()
+	due := now.AddDate(0, 0, 14)
+	returnedAt := now.AddDate(0, 0, 5)
+	return &LoanBuilder{
+		id:         uuid.New(),
+		memberID:   uuid.New(),
+		copyID:     uuid.New(),
+		loanedAt:   &now,
+		dueDate:    &due,
+		returnedAt: &returnedAt,
+		fineCents:  0,
+		createdAt:  &now,
+	}
+}
 func (b *LoanBuilder) Build() *model.Loan {
 	return &model.Loan{
 		ID:         b.id,
