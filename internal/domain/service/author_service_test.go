@@ -4,15 +4,14 @@ import (
 	"errors"
 	"testing"
 
-	"library/internal/domain/model"
-	"library/internal/domain/service"
-	"library/internal/test/builder"
-
-	mmockAuthorRepo "library/internal/test/mock"
-
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"library/internal/domain/model"
+	"library/internal/domain/service"
+	"library/internal/test/builder"
+	mmockAuthorRepo "library/internal/test/mock"
 )
 
 func TestGivenAnAuthorWhenSaveInDBThenReturnNilError(t *testing.T) {

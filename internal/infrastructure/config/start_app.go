@@ -4,14 +4,14 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/gin-gonic/gin"
+
 	"library/internal/application"
 	"library/internal/domain/model"
 	"library/internal/domain/service"
 	"library/internal/infrastructure/adapter/repository"
 	"library/internal/infrastructure/app"
 	"library/internal/infrastructure/controller"
-
-	"github.com/gin-gonic/gin"
 )
 
 func StartApp() {

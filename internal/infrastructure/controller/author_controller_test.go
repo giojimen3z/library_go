@@ -8,17 +8,17 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+
 	"library/internal/application"
 	"library/internal/domain/model"
 	"library/internal/domain/service"
 	"library/internal/infrastructure/controller"
 	"library/internal/test/builder"
 	mockAuthorRepo "library/internal/test/mock"
-
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestGivenAnAuthorWhenCreateInControllerThenReturnStatusCreated(t *testing.T) {

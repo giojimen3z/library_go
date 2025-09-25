@@ -2,10 +2,11 @@ package mock
 
 import (
 	"context"
-	"library/internal/domain/model"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
+
+	"library/internal/domain/model"
 )
 
 type AuthorRepoMock struct {
